@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BirdSpot — Where the birds at?</title>
+<meta name="description" content="Spot a bird, snap a photo, drop a pin. See what's being spotted near you and climb the leaderboard as you go.">
+<link rel="icon" href="assets/favicon-square.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy-900: #0A1A42;
+    --navy-800: #0F2156;
+    --navy-700: #15296B;
+    --blue: #2F6FED;
+    --blue-light: #7FA8FF;
+    --blue-deep: #1B4DC4;
+    --gold: #F4B400;
+    --paper: #F6F7FB;
+    --paper-dim: #EBEDF5;
+    --ink: #121528;
+    --ink-soft: #4B5074;
+    --line: rgba(255,255,255,0.14);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .wordmark {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-weight: 600;
+    margin: 0;
+  }
+  p { margin: 0; }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(10,26,66,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+  }
+  .wordmark {
+    color: #fff;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .wordmark .mark {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+    display: flex; align-items: center; justify-content: center;
+    padding: 6px;
+    opacity: 0;
+    animation: markIn 0.6s cubic-bezier(.2,1.4,.4,1) 0.15s forwards;
+  }
+  .wordmark .mark img { width: 100%; height: 100%; object-fit: contain; }
+  @keyframes markIn {
+    0% { opacity: 0; transform: scale(0.4) rotate(-25deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .nav-cta {
+    background: var(--blue);
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+  }
+  .nav-cta:hover { background: var(--blue-deep); }
+
+  /* HERO */
+  .hero {
+    background: radial-gradient(ellipse at 75% 20%, var(--navy-700) 0%, var(--navy-900) 60%);
+    color: #fff;
+    padding: 84px 0 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 40px;
+    align-items: center;
+  }
+  .hero-copy h1 {
+    font-size: 52px;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    max-width: 560px;
+    opacity: 0;
+    animation: riseIn 0.7s cubic-bezier(.2,.9,.3,1) 0.05s forwards;
+  }
+  .hero-copy p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #C7CDE8;
+    margin-top: 22px;
+    max-width: 440px;
+    opacity: 0;
+    animation: riseIn 0.7s cubic-bezier(.2,.9,.3,1) 0.2s forwards;
+  }
+  .hero-actions {
+    margin-top: 34px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: riseIn 0.7s cubic-bezier(.2,.9,.3,1) 0.35s forwards;
+  }
+  @keyframes riseIn {
+    0% { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: #2A1C00;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 26px;
+    border-radius: 10px;
+    display: inline-block;
+    transition: transform 0.15s ease;
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .hero-note {
+    font-size: 13px;
+    color: #8C94BE;
+  }
+  .hero-phone {
+    position: relative;
+    justify-self: center;
+    opacity: 0;
+    animation: phoneDrop 0.9s cubic-bezier(.22,1.2,.3,1) 0.25s forwards;
+  }
+  @keyframes phoneDrop {
+    0% { opacity: 0; transform: translateY(-60px) rotate(0deg); }
+    60% { opacity: 1; }
+    100% { opacity: 1; transform: translateY(0) rotate(3deg); }
+  }
+  .hero-phone-shot {
+    width: 280px;
+    border-radius: 28px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 7px #0C1024;
+  }
+  .hero-pin {
+    position: absolute;
+    width: 34px !important;
+    height: 34px !important;
+    left: -16px;
+    top: 38%;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    opacity: 0;
+    animation: pinDrop 0.6s cubic-bezier(.3,1.6,.4,1) 1.05s forwards;
+  }
+  @keyframes pinDrop {
+    0% { opacity: 0; transform: translateY(-30px) scale(0.6); }
+    70% { opacity: 1; }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* dotted path */
+  .path-svg {
+    display: block;
+    width: 100%;
+    height: 56px;
+  }
+  .path-svg path {
+    stroke: var(--blue-light);
+    stroke-width: 2.5;
+    stroke-dasharray: 2 10;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .path-svg.draw path {
+    stroke-dasharray: 56;
+    stroke-dashoffset: 56;
+    transition: stroke-dashoffset 0.8s ease;
+  }
+  .path-svg.draw.in-view path {
+    stroke-dashoffset: 0;
+  }
+  .stops-bg { background: var(--paper); }
+
+  .stop {
+    padding: 10px 0 46px;
+  }
+  .stop .wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .stop.reverse .wrap { direction: rtl; }
+  .stop.reverse .wrap > * { direction: ltr; }
+
+  .stop-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue-deep);
+    background: #E8EEFE;
+    padding: 6px 13px;
+    border-radius: 100px;
+  }
+  .stop h2 {
+    font-size: 34px;
+    letter-spacing: -0.01em;
+    margin-top: 18px;
+    color: var(--ink);
+  }
+  .stop p {
+    font-size: 16.5px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-top: 14px;
+    max-width: 420px;
+  }
+  .stop-shot {
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.2,.9,.3,1);
+  }
+  .stop-shot.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .stop-shot img {
+    width: 230px;
+    border-radius: 22px;
+    box-shadow: 0 20px 50px rgba(18,21,40,0.18);
+  }
+
+  /* CTA band */
+  .cta-band {
+    background: var(--navy-900);
+    color: #fff;
+    padding: 90px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-band::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(47,111,237,0.28), transparent 60%);
+  }
+  .cta-band .wrap { position: relative; }
+  .cta-band h2 {
+    font-size: 38px;
+    letter-spacing: -0.01em;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .cta-band p {
+    color: #C7CDE8;
+    font-size: 17px;
+    margin-top: 16px;
+  }
+  .cta-band .btn-primary { margin-top: 30px; }
+
+  footer {
+    background: var(--navy-900);
+    border-top: 1px solid var(--line);
+    padding: 28px 0;
+  }
+  footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .foot-links {
+    display: flex;
+    gap: 22px;
+    font-size: 14px;
+    color: #9AA1C7;
+  }
+  .foot-links a:hover { color: #fff; }
+  .foot-copy {
+    font-size: 13px;
+    color: #6F76A0;
+  }
+
+  @media (max-width: 860px) {
+    .hero .wrap { grid-template-columns: 1fr; text-align: left; }
+    .hero-phone { justify-self: start; margin-top: 36px; }
+    .hero-copy h1 { font-size: 38px; }
+    .stop .wrap { grid-template-columns: 1fr; gap: 28px; }
+    .stop.reverse .wrap { direction: ltr; }
+    .stop-shot { order: -1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .wordmark .mark, .hero-copy h1, .hero-copy p, .hero-actions, .hero-phone, .hero-pin {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .stop-shot { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .path-svg.draw path { stroke-dashoffset: 0 !important; transition: none !important; }
+  }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="wordmark" href="#top">
+      <span class="mark"><img src="assets/bird-mark.png" alt=""></span>
+      BirdSpot
+    </a>
+    <a class="nav-cta" href="#download">Download</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-copy">
+      <h1>See what's being spotted, right as it happens.</h1>
+      <p>Snap a photo, drop a pin, and watch it show up on a live map of bird sightings near you. Log what you see, compete with other birders, and keep every sighting saved.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#download">Get BirdSpot</a>
+        <span class="hero-note">Free on the App Store</span>
+      </div>
+    </div>
+    <div class="hero-phone">
+      <img class="hero-phone-shot" src="assets/nearby-birds-live-web.png" alt="BirdSpot map screen showing nearby bird sightings">
+      <img class="hero-pin" src="assets/bird-mark.png" alt="" width="34" height="34" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.45));">
+    </div>
+  </div>
+  <svg class="path-svg" viewBox="0 0 1120 56" preserveAspectRatio="none">
+    <path d="M 560 0 L 560 56" />
+  </svg>
+</header>
+
+<main class="stops-bg">
+
+  <section class="stop">
+    <div class="wrap">
+      <div class="stop-shot"><img src="assets/snap-it-log-it-web.png" alt="BirdSpot spot-a-bird screen with photo and species field"></div>
+      <div>
+        <span class="stop-tag">Spot it</span>
+        <h2>Snap it, log it.</h2>
+        <p>Take a photo, make your best guess at the species, and drop a pin. It takes seconds, and it's live on the map right after.</p>
+      </div>
+    </div>
+  </section>
+  <svg class="path-svg draw" viewBox="0 0 1120 56" preserveAspectRatio="none"><path d="M 560 0 L 560 56" /></svg>
+
+  <section class="stop reverse">
+    <div class="wrap">
+      <div class="stop-shot"><img src="assets/nearby-birds-live-web.png" alt="BirdSpot map showing live bird sightings nearby"></div>
+      <div>
+        <span class="stop-tag">See it</span>
+        <h2>Nearby birds, live.</h2>
+        <p>Open the map and see what's actually being spotted around you right now, not old data. Every pin is a real sighting from someone nearby.</p>
+      </div>
+    </div>
+  </section>
+  <svg class="path-svg draw" viewBox="0 0 1120 56" preserveAspectRatio="none"><path d="M 560 0 L 560 56" /></svg>
+
+  <section class="stop">
+    <div class="wrap">
+      <div class="stop-shot"><img src="assets/climb-leaderboard-web.png" alt="BirdSpot leaderboard of top bird spotters"></div>
+      <div>
+        <span class="stop-tag">Compete</span>
+        <h2>Climb the leaderboard.</h2>
+        <p>Earn points for every sighting, level up, and see how you stack up against birders everywhere. Six trophies to unlock along the way.</p>
+      </div>
+    </div>
+  </section>
+  <svg class="path-svg draw" viewBox="0 0 1120 56" preserveAspectRatio="none"><path d="M 560 0 L 560 56" /></svg>
+
+  <section class="stop reverse">
+    <div class="wrap">
+      <div class="stop-shot"><img src="assets/every-sighting-saved-web.png" alt="BirdSpot gallery of saved bird sightings"></div>
+      <div>
+        <span class="stop-tag">Collect</span>
+        <h2>Every sighting, saved.</h2>
+        <p>Your photos live on in your gallery. Star your favorites to keep them front and center, and watch your life list grow.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section class="cta-band" id="download">
+  <div class="wrap">
+    <h2>Your next walk outside just got more interesting.</h2>
+    <p>Download BirdSpot and see what's out there.</p>
+    <a class="btn-primary" href="https://apps.apple.com/" target="_blank" rel="noopener">Get it on the App Store</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="support.html">Support</a>
+    </div>
+    <div class="foot-copy">© 2026 BirdSpot</div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var targets = document.querySelectorAll('.stop-shot, .path-svg.draw');
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(function(el){ el.classList.add('in-view'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  targets.forEach(function(el) { io.observe(el); });
+})();
+</script>
+
+</body>
+</html>
