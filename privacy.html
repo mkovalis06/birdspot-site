@@ -9,20 +9,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy-900: #0A1A42; --navy-700: #15296B; --periwinkle: #8C7CF0;
-    --periwinkle-light: #B6ABF5; --paper: #F6F7FB; --ink: #121528; --ink-soft: #4B5074;
+    --navy-900: #0A1A42; --navy-700: #15296B; --blue: #2F6FED;
+    --blue-light: #7FA8FF; --paper: #F6F7FB; --ink: #121528; --ink-soft: #4B5074;
     --line: rgba(255,255,255,0.14);
   }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: 'Inter', -apple-system, sans-serif; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
   h1, h2, .wordmark { font-family: 'Space Grotesk', sans-serif; font-weight: 600; margin: 0; }
-  a { color: var(--periwinkle); text-decoration: none; }
+  a { color: var(--blue); text-decoration: none; }
   a:hover { text-decoration: underline; }
   .wrap { max-width: 760px; margin: 0 auto; padding: 0 28px; }
   nav { background: var(--navy-900); border-bottom: 1px solid var(--line); }
   nav .wrap { max-width: 1120px; display: flex; align-items: center; justify-content: space-between; height: 68px; }
   .wordmark { color: #fff; font-size: 19px; display: flex; align-items: center; gap: 9px; }
-  .wordmark .mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--periwinkle), #5B4FD6); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .wordmark .mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--blue), #1B4DC4); display: flex; align-items: center; justify-content: center; font-size: 15px; }
   .back { color: #C7CDE8; font-size: 14px; }
   main { padding: 64px 0 90px; }
   h1 { font-size: 34px; letter-spacing: -0.01em; }
@@ -39,7 +39,7 @@
 
 <nav>
   <div class="wrap">
-    <a class="wordmark" href="index.html"><span class="mark">🐦</span>BirdSpot</a>
+    <a class="wordmark" href="index.html"><span class="mark"><img src="bird-mark.png" alt="" style="width:100%;height:100%;object-fit:contain;padding:6px;"></span>BirdSpot</a>
     <a class="back" href="index.html">← Back to BirdSpot</a>
   </div>
 </nav>
